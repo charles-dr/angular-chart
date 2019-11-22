@@ -1,10 +1,11 @@
 import { HttpClient } from "@angular/common/http";
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from "@angular/core";
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from "@angular/forms";
 import { Store } from "@ngrx/store";
 import { AppState } from "../../../../app.state";
 import { User } from "../../../../store/user-admin/user/user.model";
 import { userStatusConstants, userStatusOptions, groupList, groupNameList, groupTypeConstant } from "../../useradmin.constants";
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 @Component({
   selector: "app-user-form",
@@ -25,6 +26,10 @@ export class UserFormComponent implements OnInit, OnChanges {
   protected emailIds: string[] = [];
   initial_setup: any;
   domainErrorMessage = "";
+  @ViewChild('systemSelect', { static: false }) systemSelect: MatSelect;
+  @ViewChild('workflowSelect', { static: false }) workflowSelect: MatSelect;
+  @ViewChild('adminSelect', { static: false }) adminSelect: MatSelect;
+
   constructor(
     protected store: Store<AppState>,
     protected httpClient: HttpClient
@@ -46,7 +51,7 @@ export class UserFormComponent implements OnInit, OnChanges {
       V_GROUP_NAME_ADMINISTRATOR: new FormControl([]),
       V_GROUP_NAME_SYSTEM: new FormControl([]),
       V_STS: new FormControl(userStatusConstants.ACTIVE, Validators.required),
-      V_IS_PRIMARY: new FormControl(false)
+      V_IS_PRIMARY: new FormControl(true)
     });
   }
 
@@ -171,5 +176,17 @@ export class UserFormComponent implements OnInit, OnChanges {
       this.isValid();
       return null;
     };
+  }
+  onGroupChange(event: MatSelectChange) {
+    setTimeout(() => {
+      if (event.value == this.groupTypeConstant.WORKFLOW) {
+        this.workflowSelect.open();
+      } else if (event.value == this.groupTypeConstant.ADMINISTRATOR) {
+        this.adminSelect.open();
+      } else if (event.value == this.groupTypeConstant.SYSTEM) {
+        this.systemSelect.open();
+      }
+      console.log('event', event);
+    }, 500)
   }
 }

@@ -11,51 +11,60 @@
       <textarea type="text" matInput placeholder="Description" formControlName="V_USR_DSC"></textarea>
     </mat-form-field>
     <mat-form-field>
-      <mat-select formControlName="V_GROUP_TYPE" placeholder="Group Type">
-        <mat-option disabled value="">Select Group Type</mat-option>
+      <mat-select formControlName="V_GROUP_TYPE" placeholder="Profile" (selectionChange)="onGroupChange($event)">
+        <mat-option disabled value="">Select Profile</mat-option>
         <mat-option *ngFor="let group of groupTypeOptions" [value]="group.key">{{group.label}}</mat-option>
       </mat-select>
     </mat-form-field>
     <!-- WORKFLOW -->
     <mat-form-field
       *ngIf="userForm.get('V_GROUP_TYPE').value !='' && userForm.get('V_GROUP_TYPE').value == groupTypeConstant.WORKFLOW ">
-      <mat-label>Assign To</mat-label>
-      <mat-select formControlName="V_GROUP_NAME_WORKFLOW" multiple>
+      <mat-label>{{groupTypeOptions[0].label}}</mat-label>
+      <mat-select formControlName="V_GROUP_NAME_WORKFLOW" multiple #workflowSelect>
+        <mat-option disabled>{{groupTypeOptions[0].label}}</mat-option>
         <mat-option (click)="onGroupAdded($event)"
           *ngFor="let group of groupNameList|groupNameType: groupTypeConstant.WORKFLOW" [value]="group">
-          {{group.key}}
+          <mat-icon>
+            {{group.icon}}
+          </mat-icon>{{group.key}}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <!-- SYSTEM -->
     <mat-form-field
       *ngIf="userForm.get('V_GROUP_TYPE').value !='' && userForm.get('V_GROUP_TYPE').value == groupTypeConstant.SYSTEM ">
-      <mat-label>Assign To</mat-label>
-      <mat-select formControlName="V_GROUP_NAME_SYSTEM" multiple>
+      <mat-label>{{groupTypeOptions[2].label}}</mat-label>
+      <mat-select formControlName="V_GROUP_NAME_SYSTEM" multiple #systemSelect>
+        <mat-option disabled> {{groupTypeOptions[2].label}}</mat-option>
         <mat-option (click)="onGroupAdded($event)"
           *ngFor="let group of groupNameList|groupNameType: groupTypeConstant.SYSTEM" [value]="group">
-          {{group.key}}
+          <mat-icon>
+            {{group.icon}}
+          </mat-icon>{{group.key}}
         </mat-option>
       </mat-select>
     </mat-form-field>
     <!-- ADMINISTRATOR  -->
     <mat-form-field
       *ngIf="userForm.get('V_GROUP_TYPE').value !='' && userForm.get('V_GROUP_TYPE').value == groupTypeConstant.ADMINISTRATOR ">
-      <mat-label>Assign To</mat-label>
-      <mat-select multiple formControlName="V_GROUP_NAME_ADMINISTRATOR">
+      <mat-label>{{groupTypeOptions[1].label}}</mat-label>
+      <mat-select multiple formControlName="V_GROUP_NAME_ADMINISTRATOR" #adminSelect>
+        <mat-option disabled> {{groupTypeOptions[1].label}}</mat-option>
         <mat-option (click)="onGroupAdded($event)"
           *ngFor="let group of groupNameList| groupNameType:groupTypeConstant.ADMINISTRATOR" [value]="group">
-          {{group.key}}
+          <mat-icon>
+            {{group.icon}}
+          </mat-icon>{{group.key}}
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <mat-form-field>
+    <!-- <mat-form-field>
       <mat-select formControlName="V_STS" placeholder="Status">
         <mat-option *ngFor="let status of userStatusOptions" [value]="status.key">{{status.label}}</mat-option>
       </mat-select>
-    </mat-form-field>
-    <mat-checkbox formControlName="V_IS_PRIMARY">
+    </mat-form-field> -->
+    <!-- <mat-checkbox formControlName="V_IS_PRIMARY">
       Is Primary Group
-    </mat-checkbox>
+    </mat-checkbox> -->
   </form>
 </div>
