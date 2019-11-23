@@ -132,7 +132,7 @@ export class UserTileListComponent implements OnInit, OnDestroy {
   ondblclick(currentUser: User, action: string) {
     // console.log('user', currentUser);
     const body = {
-      V_USR_NM: this.user.USR_NM,
+      V_USR_NM: currentUser.V_USR_NM,
       V_SRC_CD: this.user.SRC_CD,
       V_USR_DSC: currentUser.V_USR_DSC,
       REST_Service: 'User',
@@ -160,7 +160,8 @@ export class UserTileListComponent implements OnInit, OnDestroy {
     }
     const data = {
       ...currentUser,
-      V_USR_NM: this.user.USR_NM,
+      V_USR_NM: currentUser.V_USR_NM,
+      // V_USR_NM: this.user.USR_NM,
       V_SRC_ID: this.user.SRC_CD,
       REST_Service: 'User',
       Verb: 'PATCH',
