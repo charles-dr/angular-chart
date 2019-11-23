@@ -39,11 +39,19 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
   applicationValues$: Subscription;
   processValues$: Subscription;
   serviceValues$: Subscription;
+  artifactTypeValues$: Subscription;
+  artifactNameValues$: Subscription;
+  exeTypeValues$: Subscription;
+  exeNameValues$: Subscription;
   applicationValues = [];
   filteredApplicationValues = [];
   filteredProcessValues = [];
   filteredServiceValues = [];
   applicationValuesObservable = [];
+  artifactTypeValues = [];
+  exeTypeValues = [];
+  artifactNameValues = [];
+  exeNameValues = [];
   processValues = [];
   processValuesObservable: ProcessObservable[] = [];
   serviceValues = [];
@@ -135,12 +143,94 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
         }
       }
     });
+    this.artifactTypeValues$ = this.optionalService.artifactTypeOptionalValue.subscribe(data => {
+      if (data != null) {
+        this.artifactTypeValues = data;
+      }
+    });
+    this.exeTypeValues$ = this.optionalService.exeTypeOptionalValue.subscribe(data => {
+      console.log('exetype', data);
+      if (data != null) {
+        this.exeTypeValues = data;
+      }
+    });
+    this.artifactNameValues$ = this.optionalService.artifactNameOptionalValue.subscribe(data => {
+      if (data != null) {
+        this.artifactNameValues = data;
+        if (this.artifactNameValues.length) {
+          this.processValues = [];
+          if (this.selectedApplication !== '') {
+            this.artifactNameValues.forEach(ele => {
+              if (ele.artifactType === this.selectedApplication) {
+                if (this.radioSelected == 'ARTIFACT') {
+                  let copyProcessValues = ele.artifactName;
+                  if (this.filteredAuthValues && this.filteredAuthValues.length) {
+                    if (copyProcessValues.length) {
+                      copyProcessValues.forEach(processEle => {
+                        let i = this.filteredAuthValues.findIndex(v => v.V_ARTFCT_TYP == this.selectedApplication && v.V_ARTFCT_NM == processEle && (v.V_ROLE_ID.findIndex(v => v == this.selectedRoleId) > -1))
+                        if (i == -1) {
+                          this.processValues.push(processEle);
+                        }
+                      })
+                    }
+                  }
+                }
+                // else {
+                //   this.processValues = ele.artifactName;
+                // }
+
+              }
+            });
+          }
+        }
+      }
+    });
+    this.exeNameValues$ = this.optionalService.exeNameOptionalValue.subscribe(data => {
+      if (data != null) {
+        this.exeNameValues = data;
+        if (this.exeNameValues.length) {
+          this.processValues = [];
+          if (this.selectedApplication !== '') {
+            this.exeNameValues.forEach(ele => {
+              if (ele.exeType === this.selectedApplication) {
+                if (this.radioSelected == 'EXE') {
+                  console.log('ele.exeName', ele.exeName);
+                  let copyProcessValues = ele.exeName;
+                  if (this.filteredAuthValues && this.filteredAuthValues.length) {
+                    if (copyProcessValues.length) {
+                      copyProcessValues.forEach(processEle => {
+                        let i = this.filteredAuthValues.findIndex(v => v.V_EXE_TYP == this.selectedApplication && v.V_EXE_CD == processEle && (v.V_ROLE_ID.findIndex(v => v == this.selectedRoleId) > -1))
+                        if (i == -1) {
+                          this.processValues.push(processEle);
+                        }
+                      })
+                    }
+                  }
+                }
+                //  else {
+                //   this.processValues = ele.exeName;
+                // }
+              }
+            });
+          }
+        }
+      }
+    });
   }
 
   ngOnInit() {
     this.V_SRC_CD_DATA = {
       V_SRC_CD: JSON.parse(sessionStorage.getItem('u')).SRC_CD,
     };
+    if (!this.applicationValues.length) {
+      this.getApplicationList();
+    }
+    if (!this.artifactTypeValues.length) {
+      this.optionalService.getArtifactTypeOptionalValue();
+    }
+    if (!this.exeTypeValues.length) {
+      this.optionalService.getExeTypeOptionalValue();
+    }
     this.radioSelected = this.radioList[0];
     this.store.dispatch(new authActions.getAuth(this.V_SRC_CD_DATA));
     this.authValues$ = this.store.pipe(select(authSelectors.selectAllAutorizationvalues));
@@ -151,14 +241,16 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
       this.authValues = data;
       this.getFilterData(this.radioSelected);
     });
-    if (!this.applicationValues.length) {
-      this.getApplicationList();
-    }
+
   }
   ngOnDestroy() {
     this.applicationValues$.unsubscribe();
     this.processValues$.unsubscribe();
     this.serviceValues$.unsubscribe();
+    this.artifactNameValues$.unsubscribe();
+    this.artifactTypeValues$.unsubscribe();
+    this.exeNameValues$.unsubscribe();
+    this.exeTypeValues$.unsubscribe();
   }
 
   selected(index) {
@@ -285,12 +377,69 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
           this.optionalService.getProcessOptionalValue(event);
         }
       }
-    }
-    else if (this.radioSelected === 'ARTIFACT' || this.radioSelected === 'PLATFORM' || this.radioSelected === 'SERVER' || this.radioSelected === 'SLA') {
+    } else if (this.radioSelected === 'ARTIFACT') {
       this.authValueObj.V_AUTH_DSC = event;
       this.authValueObj.V_AUTH_CD = event;
-    } else {
+      if (!this.artifactNameValues.length) {
+        this.optionalService.getArtifactNameOptionalValue(event);
+      } else {
+        let flag = 0;
+        this.artifactNameValues.forEach(ele => {
+          if (ele.artifactType === event) {
+            this.processValues = [];
+            let copyProcessValues = ele.artifactName;
+            if (this.filteredAuthValues && this.filteredAuthValues.length) {
+              if (copyProcessValues.length) {
+                copyProcessValues.forEach(processEle => {
+                  let i = this.filteredAuthValues.findIndex(v => v.V_ARTFCT_TYP == event && v.V_ARTFCT_NM == processEle && (v.V_ROLE_ID.findIndex(v => v == roleId) > -1))
+                  if (i == -1) {
+                    this.processValues.push(processEle);
+                  }
+                })
+              }
+            }
+            // console.log('process', this.processValues)
+            // this.processValues = ele.process;
+            flag = 1;
+          }
+        });
+        if (!flag) {
+          this.optionalService.getArtifactNameOptionalValue(event);
+        }
+      }
+    } else if (this.radioSelected === 'EXE') {
       this.authValueObj.V_EXE_TYP = event;
+      if (!this.exeNameValues.length) {
+        this.optionalService.getExeNameOptionalValue(event);
+      } else {
+        let flag = 0;
+        this.exeNameValues.forEach(ele => {
+          if (ele.exeType === event) {
+            this.processValues = [];
+            let copyProcessValues = ele.exeName;
+            if (this.filteredAuthValues && this.filteredAuthValues.length) {
+              if (copyProcessValues.length) {
+                copyProcessValues.forEach(processEle => {
+                  let i = this.filteredAuthValues.findIndex(v => v.V_EXE_TYP == event && v.V_EXE_CD == processEle && (v.V_ROLE_ID.findIndex(v => v == roleId) > -1))
+                  if (i == -1) {
+                    this.processValues.push(processEle);
+                  }
+                })
+              }
+            }
+            // console.log('process', this.processValues)
+            // this.processValues = ele.process;
+            flag = 1;
+          }
+        });
+        if (!flag) {
+          this.optionalService.getExeNameOptionalValue(event);
+        }
+      }
+    }
+    else if (this.radioSelected === 'PLATFORM' || this.radioSelected === 'SERVER' || this.radioSelected === 'SLA') {
+      this.authValueObj.V_AUTH_DSC = event;
+      this.authValueObj.V_AUTH_CD = event;
     }
     this.enableAddButtonFlag = this.checkEnableButtonFlag();
   }
@@ -375,6 +524,7 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
     this.authValues.forEach(ele => {
       // console.log('type', ele.V_AUTH_TYP);
     })
+    // this is to get dropdown results on initial for selecting auth from exisiting tab
     if (this.radioSelected == 'PROCESS' || this.radioSelected == 'SERVICE') {
       if (this.filteredAuthValues.length) {
         this.filteredAuthValues.forEach(ele => {
@@ -454,6 +604,7 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
         })
       }
     }
+    // this is to get dropdown results on initial for selecting auth from add tab
     if (this.radioSelected === 'PLATFORM' || this.radioSelected === 'SERVER' || this.radioSelected === 'SLA') {
       if (this.filteredAuthValues.length) {
         this.applicationValues = [];
@@ -468,20 +619,11 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
         this.applicationValues = [];
       }
     } else if (this.radioSelected === 'ARTIFACT') {
-      if (this.filteredAuthValues.length) {
+      if (this.artifactTypeValues.length) {
         this.applicationValues = [];
         this.processValues = [];
-        this.filteredAuthValues.forEach((ele: any) => {
-          if (this.applicationValues.length && (this.applicationValues.indexOf(ele.V_ARTFCT_TYP) > -1)) {
-
-          } else {
-            this.applicationValues.push(ele.V_ARTFCT_TYP);
-          }
-          if (this.processValues.length && this.processValues.indexOf(ele.V_ARTFCT_NM) > -1) {
-
-          } else {
-            this.processValues.push(ele.V_ARTFCT_NM);
-          }
+        this.artifactTypeValues.forEach((ele: any) => {
+          this.applicationValues.push(ele);
         });
       } else {
         this.applicationValues = [];
@@ -489,21 +631,13 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
       }
     }
     else if (this.radioSelected === 'EXE') {
-      if (this.filteredAuthValues.length) {
+      if (this.exeTypeValues.length) {
         this.applicationValues = [];
         this.processValues = [];
-        this.filteredAuthValues.forEach((ele: any) => {
-          if (this.applicationValues.length && (this.applicationValues.indexOf(ele.V_EXE_TYP) > -1)) {
-
-          } else {
-            this.applicationValues.push(ele.V_EXE_TYP);
-          }
-          if (this.processValues.length && this.processValues.indexOf(ele.V_EXE_CD) > -1) {
-
-          } else {
-            this.processValues.push(ele.V_EXE_CD);
-          }
+        this.exeTypeValues.forEach((ele: any) => {
+          this.applicationValues.push(ele);
         });
+        console.log('EXE', this.applicationValues);
       } else {
         this.applicationValues = [];
         this.processValues = [];

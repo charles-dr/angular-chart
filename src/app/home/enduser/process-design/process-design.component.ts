@@ -486,6 +486,7 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
         this.closeSchedulePanel();
       }),
         eventBus.on('element.changed', ($event) => {
+          console.log('change', $event);
           this.iconType = $event.element.type;
           this.showCondtionType = false;
           const businessObject = $event.element.businessObject;
@@ -734,6 +735,7 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
     } else if (this.isSequenceFlow) {
       this.addUpdateSequenceFlag = true;
     }
+    // validating from the diagram to avoid the same id(service/process/sequence flow) usage
     if (!this.isApp && this.oldStateId && checkForIdFlag) {
       if (!this.checkSameProcessNameInList()) {
         this.old_srvc_cd = this.oldStateId;
@@ -777,6 +779,7 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
     }
   }
   commonInputChangeFunction() {
+    // application validation from the app list to avoid the same name(id)
     if (this.isApp) {
       if (this.appProcessList.length) {
         let i = this.appProcessList.findIndex(v => v.app === this.generalId);
@@ -788,13 +791,15 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
         }
       }
     }
-    // on service id update , we do not have to send sequence flow update call to the backend. 
+    // (!this.isSequenceFlow && !this.elementExistError)on service id update , we do not have to send sequence flow update call to the backend. 
     if (this.isService && !this.isSequenceFlow && !this.elementExistError) {
-      this.updateService();
+      // this.updateService();
+      this.getAllTabs(this.generalId);
     }
     if (this.isSequenceFlow) {
       this.updatesequenceFlow();
     }
+    // secondary process validation from the process list to avoid the same name(id) from the same application itself
     if (this.isProcess) {
       let processList = this.chilItem.filter(v => v.value == this.selectedApp);
       if (processList.length) {
@@ -1316,7 +1321,7 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
               if (this.item[index].children && this.item[index].children.length) {
                 let childIndex = this.item[index].children.findIndex(v => v.text == this.selectedProcess);
                 if (childIndex > -1) {
-                  this.onTitleClick(this.item[index].children[childIndex]);
+                  this.onTitleClick(this.item[index].children[childIndex], false, true);
                 }
               } else {
                 this.onTitleClick(this.item[index]);
@@ -1343,16 +1348,14 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
     })
   }
   updateTabs() {
-    // if (this.isProcess) {
-    //   this.updateProcess();
-    // } else
-
+    // update tab api called if we change the tab and also if we move out of the tab, so we have to check if it is service
+    //  !this.isSequenceFlow - to bypass secondary event for updating source and target sequences of the service
     if (this.isService && !this.isSequenceFlow) {
       this.updateService();
     }
   }
 
-  onTitleClick(item, parentTitleClick?) {
+  onTitleClick(item, parentTitleClick?, addedProcess?) {
     this.closeSchedulePanel();
     this.onTitleClickNoDelete = true;
     this.isApp = false;
@@ -1371,54 +1374,56 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
         File_Path: `${this.ctrl_variables.bpmn_file_path}` + item.value + '/',
         File_Name: item.text.replace(new RegExp(' ', 'g'), '_') + '.bpmn'
       }));
-      this.http.post(this.downloadUrl, formData)
-        .subscribe(
-          (res: any) => {
-            if (res._body != "") {
-              // this.modeler.importXML('');
-              this.modeler.clear();
-              this.modeler.importXML(res._body, this.handleError.bind(this));
-              var canvas = this.modeler.get('canvas');
-              canvas.zoom('fit-viewport');
-              canvas.viewbox({ x: 1, y: 1, width: 500, height: 500 })
-              this.bpmnTemplate = res._body;
-            } else {
-              // let x = '<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3"></bpmn:definitions>';
-              // this.modeler.importXML(x);
-              // this.bpmnTemplate = x;
-              this.httpClient.get('/assets/bpmn/newDiagram.bpmn', {
-                headers: { observe: 'response' }, responseType: 'text'
-              }).subscribe(
-                (x: any) => {
-                  // this.modeler.importXML('');
-                  this.modeler.clear();
-                  this.modeler.importXML(x, this.handleError.bind(this));
-                  var canvas = this.modeler.get('canvas');
-                  canvas.zoom('fit-viewport');
-                  canvas.viewbox({ x: 1, y: 1, width: 500, height: 500 })
-                  this.resetCanvas();
-                  this.bpmnTemplate = x;
-                  setTimeout(() => {
-                    let elementRegistry = this.modeler.get('elementRegistry');
-                    let element = elementRegistry.get('newProcess');
-                    let modeling = this.modeler.get('modeling');
-                    const doc = [{ 'text': this.documentation }];
-                    let id = this.selectedProcess;
-                    modeling.updateProperties(element, {
-                      name: id,
-                      id: id.replace(new RegExp(' ', 'g'), '_'),
+      if (!addedProcess) {
+        this.http.post(this.downloadUrl, formData)
+          .subscribe(
+            (res: any) => {
+              if (res._body != "") {
+                // this.modeler.importXML('');
+                this.modeler.clear();
+                this.modeler.importXML(res._body, this.handleError.bind(this));
+                var canvas = this.modeler.get('canvas');
+                canvas.zoom('fit-viewport');
+                canvas.viewbox({ x: 1, y: 1, width: 500, height: 500 })
+                this.bpmnTemplate = res._body;
+              } else {
+                // let x = '<?xml version="1.0" encoding="UTF-8"?><bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3"></bpmn:definitions>';
+                // this.modeler.importXML(x);
+                // this.bpmnTemplate = x;
+                this.httpClient.get('/assets/bpmn/newDiagram.bpmn', {
+                  headers: { observe: 'response' }, responseType: 'text'
+                }).subscribe(
+                  (x: any) => {
+                    // this.modeler.importXML('');
+                    this.modeler.clear();
+                    this.modeler.importXML(x, this.handleError.bind(this));
+                    var canvas = this.modeler.get('canvas');
+                    canvas.zoom('fit-viewport');
+                    canvas.viewbox({ x: 1, y: 1, width: 500, height: 500 })
+                    this.resetCanvas();
+                    this.bpmnTemplate = x;
+                    setTimeout(() => {
+                      let elementRegistry = this.modeler.get('elementRegistry');
+                      let element = elementRegistry.get('newProcess');
+                      let modeling = this.modeler.get('modeling');
+                      const doc = [{ 'text': this.documentation }];
+                      let id = this.selectedProcess;
+                      modeling.updateProperties(element, {
+                        name: id,
+                        id: id.replace(new RegExp(' ', 'g'), '_'),
+                      })
+                      document.getElementById("processId").focus();
+                      this.upload(this.selectedApp, this.selectedProcess);
                     })
-                    document.getElementById("processId").focus();
-                    this.upload(this.selectedApp, this.selectedProcess);
-                  })
-                },
-                this.handleError.bind(this)
-              );
-            }
-          },
-          this.handleError.bind(this)
-        );
-      this.Execute_AP_PR();
+                  },
+                  this.handleError.bind(this)
+                );
+              }
+            },
+            this.handleError.bind(this)
+          );
+        this.Execute_AP_PR();
+      }
     } else {
       this.selectedApp = item.value;
       this.selectedProcess = '';
@@ -1672,7 +1677,7 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
     this.opened = true;
     this.showRightIcon = true;
     this.endUserService.getAllTabs(this.selectedApp, this.selectedProcess, selService)
-      .subscribe(res => {
+      .subscribe((res) => {
         if (res) {
           this.propertyPanelAllTabsData = res.json();
           if (this.propertyPanelAllTabsData && this.propertyPanelAllTabsData.length) {

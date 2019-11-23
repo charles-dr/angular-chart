@@ -143,8 +143,8 @@ export class OptionalValuesService implements OnDestroy {
     this.http.get(this.apiUrlGet + "V_SRC_CD=" + this.V_SRC_CD + "&V_USR_NM=" + this.V_USR_NM + "&REST_Service=ArtifactTypes&Verb=GET").subscribe(
       res => {
         if (res) {
-          this.artifactTypeArray = res['V_ARTFCT_TYP'];
-          this.artifactTypeOptionalValue.next(res['V_ARTFCT_TYP']);
+          this.artifactTypeArray = res['ARTFCT_TYP'];
+          this.artifactTypeOptionalValue.next(res['ARTFCT_TYP']);
         }
       });
   }
@@ -177,8 +177,8 @@ export class OptionalValuesService implements OnDestroy {
     this.http.get(this.apiUrlGet + "V_SRC_CD=" + this.V_SRC_CD + "&V_USR_NM=" + this.V_USR_NM + "&REST_Service=ExeTypes&Verb=GET").subscribe(
       res => {
         if (res) {
-          this.exeTypeArray = res['V_EXE_TYP'];
-          this.exeTypeOptionalValue.next(res['V_EXE_TYP']);
+          this.exeTypeArray = res['EXE_TYP'];
+          this.exeTypeOptionalValue.next(res['EXE_TYP']);
         }
       });
   }
