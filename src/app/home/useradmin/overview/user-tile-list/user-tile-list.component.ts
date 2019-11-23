@@ -7,7 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { AppState } from 'src/app/app.state';
 import { environment } from '../../../../../environments/environment';
 import { userGroup } from '../../../../store/user-admin/user-group/usergroup.model';
-import { UpdateUser } from '../../../../store/user-admin/user/user.action';
+import { UpdateUser, UpdateUserStatus } from '../../../../store/user-admin/user/user.action';
 import { User } from '../../../../store/user-admin/user/user.model';
 import { groupNameList, groupTypeConstant } from '../../useradmin.constants';
 import { OverviewService } from '../overview.service';
@@ -57,10 +57,8 @@ export class UserTileListComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.user = JSON.parse(sessionStorage.getItem('u'));
-    console.log('groupId', this.groupId);
     this.setPrimaryValue();
     this.setGroupId();
-    console.log('users', this.users);
     document.addEventListener('mousedown', event => {
       this.contextMenuActive = false;
       this.contextMenuData = null;
@@ -132,10 +130,18 @@ export class UserTileListComponent implements OnInit, OnDestroy {
     this.contextMenuData = null;
   }
   ondblclick(currentUser: User, action: string) {
-    console.log('user', currentUser);
+    // console.log('user', currentUser);
+    const body = {
+      V_USR_NM: this.user.USR_NM,
+      V_SRC_CD: this.user.SRC_CD,
+      V_USR_DSC: currentUser.V_USR_DSC,
+      REST_Service: 'User',
+      Verb: 'PATCH',
+    };
     switch (action) {
       case 'Status': {
-        currentUser.V_STS = currentUser.V_STS.toUpperCase() === 'ACTIVE' ? 'TERMINATED' : 'ACTIVE'
+        currentUser.V_STS = currentUser.V_STS.toUpperCase() === 'ACTIVE' ? 'TERMINATED' : 'ACTIVE';
+        body['V_STS'] = currentUser.V_STS;
         break;
       }
       case 'Primary': {
@@ -148,6 +154,7 @@ export class UserTileListComponent implements OnInit, OnDestroy {
           }
         }
         delete currentUser['isPrimary'];
+        body['V_USR_GRP_CD'] = currentUser.V_IS_PRIMARY;
         break;
       }
     }
@@ -159,12 +166,12 @@ export class UserTileListComponent implements OnInit, OnDestroy {
       Verb: 'PATCH',
       id: currentUser.id,
     };
-    console.log('data', data);
-    this.store.dispatch(new UpdateUser(data));
+    // console.log('data', data);
+    this.store.dispatch(new UpdateUserStatus(data, body));
   }
   ondblclickGroup(currentUser, group) {
-    console.log('currentUser', currentUser);
-    console.log('group', group);
+    // console.log('currentUser', currentUser);
+    // console.log('group', group);
     let index = this.checkIndex(currentUser.V_USR_GRP_ID, group.groupId)
     // add user in group
     if (!index) {

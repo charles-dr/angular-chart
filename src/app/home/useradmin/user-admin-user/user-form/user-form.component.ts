@@ -67,7 +67,6 @@ export class UserFormComponent implements OnInit, OnChanges {
     }
   }
   ngOnChanges(changes: SimpleChanges): void {
-    console.log('chanhes', changes);
     if (changes.hasOwnProperty("user") && changes.hasOwnProperty("groupId")) {
       this.setFormValue(this.user, this.groupId);
     }
@@ -90,9 +89,6 @@ export class UserFormComponent implements OnInit, OnChanges {
     return this.userForm.controls;
   }
   onGroupAdded(event) {
-    console.log('onGroupAdded', this.userForm.get('V_GROUP_NAME_ADMINISTRATOR').value);
-    console.log('onGroupAdded', this.userForm.get('V_GROUP_NAME_SYSTEM').value);
-    console.log('groupAddedList', this.userForm.get('V_GROUP_NAME_WORKFLOW').value);
   }
   setFormValue(user: User, groupId: string): void {
     const groupIndex = user.V_USR_GRP_ID
@@ -186,7 +182,6 @@ export class UserFormComponent implements OnInit, OnChanges {
       } else if (event.value == this.groupTypeConstant.SYSTEM) {
         this.systemSelect.open();
       }
-      console.log('event', event);
     }, 500)
   }
 }

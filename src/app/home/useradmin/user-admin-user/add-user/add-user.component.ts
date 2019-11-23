@@ -106,7 +106,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
               });
             }
           }
-          console.log('selected id', this.selectedGroupId);
           delete userData['V_GROUP_NAME_ADMINISTRATOR']
           delete userData['V_GROUP_NAME_SYSTEM']
           delete userData['V_GROUP_NAME_WORKFLOW']
@@ -114,7 +113,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
           if (this.userAlreadyExist) {
             return;
           }
-          console.log('userdata', userData);
           this.store.dispatch(new AddUser(userData));
         }
         break;
@@ -137,7 +135,6 @@ export class AddUserComponent implements OnInit, OnDestroy {
       Verb: ["POST"],
       V_IS_PRIMARY: user.V_IS_PRIMARY ? "Y" : "N"
     };
-    console.log('json', json);
     this.userAdminService.postSecuredJSON(json).subscribe(
       res => {
         const V_SRC_CD_DATA = {

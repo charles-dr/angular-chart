@@ -38,7 +38,7 @@ export class AddEditAuthorizeComponent extends AuthorizeComponent implements OnI
     private dialogRef: MatDialogRef<AddEditAuthorizeComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any) {
     super(noAuthData, store, optionalService, http, apiServcie);
-    console.log('data', data);
+    // console.log('data', data);
     if (data.auth) {
       this.isEditMode = true;
       this.selectedView = 'addNewAuth';
@@ -67,7 +67,7 @@ export class AddEditAuthorizeComponent extends AuthorizeComponent implements OnI
     setTimeout(ele => {
       if (this.data.selectedApp.app != '') {
         // this.radioSelected = this.selectedApp.authType.toUpperCase();
-        console.log('radioSelected', this.radioSelected)
+        // console.log('radioSelected', this.radioSelected)
         this.onExistingAppSelect(this.selectedApp, true)
       }
     }, 1000);

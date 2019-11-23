@@ -9,6 +9,7 @@ export const ADD_USER = '[User] Add User';
 export const ADD_USER_SUCCESS = '[User] Add User Success';
 export const ADD_USER_FAIL = '[User] Add User Fail';
 export const UPDATE_USER = '[User] Update User';
+export const UPDATE_USER_STATUS = '[User] Update User Status';
 export const UPDATE_USER_SUCCESS = '[User] Update User Success';
 export const UPDATE_USER_FAIL = '[User] Update User Fail';
 export const SELECT_USER_GROUP_RELATION = '[USER] Select User Group Relation';
@@ -34,7 +35,7 @@ export class getUserSuccess implements Action {
 export class getUserFail implements Action {
   readonly type = GET_USER_FAIL;
 
-  constructor(public payload: string) {}
+  constructor(public payload: string) { }
 }
 
 export class AddUser implements Action {
@@ -60,7 +61,11 @@ export class UpdateUser implements Action {
   constructor(public payload: any) {
   }
 }
-
+export class UpdateUserStatus implements Action {
+  readonly type = UPDATE_USER_STATUS;
+  constructor(public payload: any, public body) {
+  }
+}
 export class UpdateUserSuccess implements Action {
   readonly type = UPDATE_USER_SUCCESS;
   constructor(public payload: any) {
@@ -114,23 +119,23 @@ export class RemoveUserId implements Action {
 export class UpdateUserGroupIds implements Action {
   readonly type = UPDATE_USER_GROUP_IDS;
 
-  constructor(public payload:any) {}
+  constructor(public payload: any) { }
 }
 
 
 export type Actions = getUser
-| getUserSuccess
-| getUserFail
-| AddUser
-| AddUserSuccess
-| AddUserFail
-| UpdateUser
-| UpdateUserSuccess
-| UpdateUserFail
-| SelectUserGroupRelation
-| RemoveSelectedUserGroupRelation
-| CheckedUserGroup
-| selectUserId
-| RemoveUserId
-| UpdateUserGroupIds
-| UpdateUserMemberShip;
+  | getUserSuccess
+  | getUserFail
+  | AddUser
+  | AddUserSuccess
+  | AddUserFail
+  | UpdateUser
+  | UpdateUserSuccess
+  | UpdateUserFail
+  | SelectUserGroupRelation
+  | RemoveSelectedUserGroupRelation
+  | CheckedUserGroup
+  | selectUserId
+  | RemoveUserId
+  | UpdateUserGroupIds
+  | UpdateUserMemberShip;

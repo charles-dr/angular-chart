@@ -159,7 +159,7 @@ export class FormComponent implements OnInit {
   getFormData(): any {
     this.Form_Data = [];
     this.Form_Data = this.StorageSessionService.getCookies("report_table");
-    console.log('this.formdata', this.Form_Data);
+    // console.log('this.formdata', this.Form_Data);
     this.configService.prepareAndGetFieldConfigurations(this.Form_Data, true);
     this.RVP_Keys = [];
     this.RVP_Values = [];
@@ -419,9 +419,9 @@ export class FormComponent implements OnInit {
     this.V_ID_Key_Value = this.PVP["V_Key_Values"];
     this.V_KEY_NAME = key_name_ar.join("|");
     this.V_KEY_VALUE = key_val_ar.join("|");
-    console.log('V_KEY_NAME', this.V_KEY_NAME);
-    console.log('V_KEY_VALUE', this.V_KEY_VALUE);
-    console.log('PVP', this.PVP);
+    // console.log('V_KEY_NAME', this.V_KEY_NAME);
+    // console.log('V_KEY_VALUE', this.V_KEY_VALUE);
+    // console.log('PVP', this.PVP);
   }
 
   invoke_router(res) {

@@ -34,7 +34,6 @@ export class SingleGroupComponent implements OnInit, OnDestroy {
     this.overviewService.userGroupMap$.pipe(takeUntil(this.unsubscribeAll)).subscribe(flag => {
       if (flag) {
         this.users = this.overviewService.userGroupMap.get(this.group.id);
-        console.log('this.users', this.users);
       }
     });
   }
