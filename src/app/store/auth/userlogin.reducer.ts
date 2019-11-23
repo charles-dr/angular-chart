@@ -54,7 +54,7 @@ export function userLoginReducer(
     case UserLoginActions.USER_LOGIN_SUCCESS:
       return {
         ...state,
-        userInfo: action.payload,
+        userInfo: action.payload ? action.payload : userinfoData,
         loading: false,
         loaded: true
       };

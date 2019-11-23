@@ -3,6 +3,7 @@ import { Effect, ofType, Actions } from '@ngrx/effects';
 import { Observable, of } from 'rxjs';
 import { Action } from '@ngrx/store';
 import * as userMemberShipActions from './usermembership.action';
+import * as userActions from '../user/user.action';
 import { mergeMap, map, catchError } from 'rxjs/operators';
 import { userMemberShip } from './usermembership.model';
 import { UserAdminService } from '../../../services/user-admin.service';
@@ -30,7 +31,7 @@ export class UserMembershipEffects {
     ofType<userMemberShipActions.addUserMembership>(userMemberShipActions.ADD_USER_MEMBERSHIP),
     mergeMap((action: userMemberShipActions.addUserMembership) =>
       this.useradmin.postSecuredJSON(action.payload).pipe(map(
-          (result: any) => new userMemberShipActions.addUserMembershipSuccess(result)
+          (result: any) => new userActions.UpdateUserMemberShip(result)
         ),
         catchError(err => of(new userMemberShipActions.addUserMembershipFail(err.error)))
       )

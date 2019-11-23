@@ -81,6 +81,13 @@ export function userReducer(
         loaded: true
       });
 
+      case UserActions.UPDATE_USER_MEMBERSHIP:
+      return adapter.upsertOne(action.payload[0], {
+        ...state,
+        loading: false,
+        loaded: true
+      });  
+
     case UserActions.UPDATE_USER_FAIL:
       return {
         ...state,

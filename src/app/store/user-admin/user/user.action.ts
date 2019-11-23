@@ -17,6 +17,7 @@ export const CHECKED_USER_GROUP = '[USER] Checked User Group';
 export const SELECT_USER_ID = '[User] Select User Id';
 export const REMOVE_USER_ID = '[User] Remove User Id';
 export const UPDATE_USER_GROUP_IDS = '[User] Update User Group Ids';
+export const UPDATE_USER_MEMBERSHIP = '[User] Update User Membership';
 
 export class getUser implements Action {
   readonly type = GET_USER;
@@ -68,6 +69,12 @@ export class UpdateUserSuccess implements Action {
 
 export class UpdateUserFail implements Action {
   readonly type = UPDATE_USER_FAIL;
+  constructor(public payload: any) {
+  }
+}
+
+export class UpdateUserMemberShip implements Action {
+  readonly type = UPDATE_USER_MEMBERSHIP;
   constructor(public payload: any) {
   }
 }
@@ -125,4 +132,5 @@ export type Actions = getUser
 | CheckedUserGroup
 | selectUserId
 | RemoveUserId
-| UpdateUserGroupIds;
+| UpdateUserGroupIds
+| UpdateUserMemberShip;
