@@ -92,9 +92,7 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
                   if (this.filteredAuthValues && this.filteredAuthValues.length) {
                     if (copyProcessValues.length) {
                       copyProcessValues.forEach(processEle => {
-                        console.log('processEle', processEle)
                         let i = this.filteredAuthValues.findIndex(v => v.V_APP_CD == this.selectedApplication && v.V_PRCS_CD == processEle && (v.V_ROLE_ID.findIndex(v => v == this.selectedRoleId) > -1))
-                        console.log('i', i);
                         if (i == -1) {
                           this.processValues.push(processEle);
                         }
@@ -124,9 +122,7 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
                 if (this.filteredAuthValues && this.filteredAuthValues.length) {
                   if (copyServiceValues.length) {
                     copyServiceValues.forEach(serviceEle => {
-                      console.log('serviceEle', serviceEle)
                       let i = this.filteredAuthValues.findIndex(v => v.V_APP_CD == this.selectedApplication && v.V_PRCS_CD == this.selectedProcess && v.V_SRVC_CD == serviceEle && (v.V_ROLE_ID.findIndex(v => v == this.selectedRoleId) > -1))
-                      console.log('i', i)
                       if (i == -1) {
                         this.serviceValues.push(serviceEle);
                       }
@@ -216,7 +212,6 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
         })
       }
     }
-    console.log('filteredProcessValues', this.filteredProcessValues);
   }
   onExistingProcessSelect(event) {
     this.filteredServiceValues = [];
@@ -238,8 +233,8 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
     }
   }
   onAppSelect(event, roleId) {
-    console.log('filteredAuthValues', this.filteredAuthValues)
-    console.log('roleId', roleId);
+    // console.log('filteredAuthValues', this.filteredAuthValues)
+    // console.log('roleId', roleId);
     this.selectedRoleId = roleId;
     this.selectedApplication = event;
     if (this.radioSelected === 'PROCESS') {
@@ -255,16 +250,14 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
             if (this.filteredAuthValues && this.filteredAuthValues.length) {
               if (copyProcessValues.length) {
                 copyProcessValues.forEach(processEle => {
-                  console.log('processEle', processEle)
                   let i = this.filteredAuthValues.findIndex(v => v.V_APP_CD == this.selectedApplication && v.V_PRCS_CD == processEle && (v.V_ROLE_ID.findIndex(v => v == roleId) > -1))
-                  console.log('i', i);
                   if (i == -1) {
                     this.processValues.push(processEle);
                   }
                 })
               }
             }
-            console.log('process', this.processValues)
+            // console.log('process', this.processValues)
             // this.processValues = ele.process;
             flag = 1;
           }
@@ -283,7 +276,7 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
           if (ele.app === this.selectedApplication) {
             this.processValues = [];
             this.processValues = ele.process;
-            console.log('process', this.processValues)
+            // console.log('process', this.processValues)
             // this.processValues = ele.process;
             flag = 1;
           }
@@ -304,8 +297,8 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
 
   onProcessSelect(event, roleId) {
     this.selectedRoleId = roleId;
-    console.log('filteredAuthValues', this.filteredAuthValues)
-    console.log('roleId', roleId);
+    // console.log('filteredAuthValues', this.filteredAuthValues)
+    // console.log('roleId', roleId);
     // this.selectedProcess.push({ 'index': index, 'process': event.value });
     this.selectedProcess = event;
     if (this.radioSelected === 'SERVICE') {
@@ -321,16 +314,14 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
             if (this.filteredAuthValues && this.filteredAuthValues.length) {
               if (copyServiceValues.length) {
                 copyServiceValues.forEach(serviceEle => {
-                  console.log('serviceEle', serviceEle)
                   let i = this.filteredAuthValues.findIndex(v => v.V_APP_CD == this.selectedApplication && v.V_PRCS_CD == this.selectedProcess && v.V_SRVC_CD == serviceEle && (v.V_ROLE_ID.findIndex(v => v == roleId) > -1))
-                  console.log('i', i)
                   if (i == -1) {
                     this.serviceValues.push(serviceEle);
                   }
                 })
               }
             }
-            console.log('serviceValues', this.serviceValues)
+            // console.log('serviceValues', this.serviceValues)
             flag = 1;
           }
         });
@@ -378,9 +369,12 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
     this.applicationValues = [];
     this.processValues = [];
     this.filteredApplicationValues = [];
-    this.filteredProcessValues = [];
-    this.filteredServiceValues = [];
+    // this.filteredProcessValues = [];
+    // this.filteredServiceValues = [];
     this.filteredAuthValues = this.authValues.filter(v => v['V_AUTH_TYP'] === data);
+    this.authValues.forEach(ele => {
+      // console.log('type', ele.V_AUTH_TYP);
+    })
     if (this.radioSelected == 'PROCESS' || this.radioSelected == 'SERVICE') {
       if (this.filteredAuthValues.length) {
         this.filteredAuthValues.forEach(ele => {
@@ -460,7 +454,7 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
         })
       }
     }
-    if (this.radioSelected === 'ARTIFACT' || this.radioSelected === 'PLATFORM' || this.radioSelected === 'SERVER' || this.radioSelected === 'SLA') {
+    if (this.radioSelected === 'PLATFORM' || this.radioSelected === 'SERVER' || this.radioSelected === 'SLA') {
       if (this.filteredAuthValues.length) {
         this.applicationValues = [];
         this.filteredAuthValues.forEach((ele: any) => {
@@ -473,7 +467,28 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
       } else {
         this.applicationValues = [];
       }
-    } else if (this.radioSelected === 'EXE') {
+    } else if (this.radioSelected === 'ARTIFACT') {
+      if (this.filteredAuthValues.length) {
+        this.applicationValues = [];
+        this.processValues = [];
+        this.filteredAuthValues.forEach((ele: any) => {
+          if (this.applicationValues.length && (this.applicationValues.indexOf(ele.V_ARTFCT_TYP) > -1)) {
+
+          } else {
+            this.applicationValues.push(ele.V_ARTFCT_TYP);
+          }
+          if (this.processValues.length && this.processValues.indexOf(ele.V_ARTFCT_NM) > -1) {
+
+          } else {
+            this.processValues.push(ele.V_ARTFCT_NM);
+          }
+        });
+      } else {
+        this.applicationValues = [];
+        this.processValues = [];
+      }
+    }
+    else if (this.radioSelected === 'EXE') {
       if (this.filteredAuthValues.length) {
         this.applicationValues = [];
         this.processValues = [];
@@ -483,10 +498,10 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
           } else {
             this.applicationValues.push(ele.V_EXE_TYP);
           }
-          if (this.processValues.length && this.processValues.indexOf(ele.V_AUTH_CD) > -1) {
+          if (this.processValues.length && this.processValues.indexOf(ele.V_EXE_CD) > -1) {
 
           } else {
-            this.processValues.push(ele.V_AUTH_CD);
+            this.processValues.push(ele.V_EXE_CD);
           }
         });
       } else {

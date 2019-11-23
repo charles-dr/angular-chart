@@ -11,6 +11,10 @@ export class OptionalValuesService implements OnDestroy {
   applicationOptionalValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   processOptionalValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   serviceOptionalValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  artifactTypeOptionalValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  artifactNameOptionalValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  exeTypeOptionalValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  exeNameOptionalValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   applicationProcessValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   selectedAppPrcoessValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   selecetedProcessTxnValue: BehaviorSubject<any> = new BehaviorSubject<any>(null);
@@ -25,6 +29,10 @@ export class OptionalValuesService implements OnDestroy {
   processArray = [];
   serviceArray = [];
   applicationProcessArray = [];
+  artifactTypeArray = [];
+  artifactNameArray = [];
+  exeTypeArray = [];
+  exeNameArray = [];
 
   private apiUrlGet = this.apiService.endPoints.insecure;
   constructor(private http: HttpClient, private apiService: ApiService) {
@@ -39,6 +47,8 @@ export class OptionalValuesService implements OnDestroy {
   }
 
   getApplicationOptionalValue() {
+    this.getExeTypeOptionalValue();
+    this.getArtifactTypeOptionalValue();
     this.V_SRC_CD = JSON.parse(sessionStorage.getItem('u')).SRC_CD;
     this.V_USR_NM = JSON.parse(sessionStorage.getItem('u')).USR_NM;
     this.http.get(this.apiUrlGet + "V_SRC_CD=" + this.V_SRC_CD + "&V_USR_NM=" + this.V_USR_NM + "&REST_Service=SourceApps&Verb=GET").subscribe(
@@ -125,6 +135,74 @@ export class OptionalValuesService implements OnDestroy {
         this.applicationProcessArray.push({ 'app': ele.APP_CD, 'process': ele.PRCS_CD.split(","), 'auth': ele.PRCS_AUTH.split(",") });
       })
       this.applicationProcessValue.next(this.applicationProcessArray);
+    }
+  }
+  getArtifactTypeOptionalValue() {
+    this.V_SRC_CD = JSON.parse(sessionStorage.getItem('u')).SRC_CD;
+    this.V_USR_NM = JSON.parse(sessionStorage.getItem('u')).USR_NM;
+    this.http.get(this.apiUrlGet + "V_SRC_CD=" + this.V_SRC_CD + "&V_USR_NM=" + this.V_USR_NM + "&REST_Service=ArtifactTypes&Verb=GET").subscribe(
+      res => {
+        if (res) {
+          this.artifactTypeArray = res['V_ARTFCT_TYP'];
+          this.artifactTypeOptionalValue.next(res['V_ARTFCT_TYP']);
+        }
+      });
+  }
+  getArtifactNameOptionalValue(artifactType, update?) {
+    this.V_SRC_CD = JSON.parse(sessionStorage.getItem('u')).SRC_CD;
+    this.V_USR_NM = JSON.parse(sessionStorage.getItem('u')).USR_NM;
+    let flag = 0;
+    let index = 0;
+    if (this.artifactNameArray.length) {
+      this.artifactNameArray.forEach((ele, i) => {
+        if (ele.artifactType === artifactType) {
+          flag = 1;
+          index = i;
+        }
+      })
+    }
+    if (!flag || !this.artifactNameArray.length) {
+      this.http.get(this.apiUrlGet + "V_ARTFCT_TYP=" + artifactType + "&V_SRC_CD=" + this.V_SRC_CD + "&V_USR_NM=" + this.V_USR_NM + "&REST_Service=UsersArtifact&Verb=GET").subscribe(
+        res => {
+          if (res) {
+            this.artifactNameArray.push({ 'artifactType': artifactType, 'artifactName': res['ARTFCT_CD'], 'data': res });
+            this.artifactNameOptionalValue.next(this.artifactNameArray);
+          }
+        });
+    }
+  }
+  getExeTypeOptionalValue() {
+    this.V_SRC_CD = JSON.parse(sessionStorage.getItem('u')).SRC_CD;
+    this.V_USR_NM = JSON.parse(sessionStorage.getItem('u')).USR_NM;
+    this.http.get(this.apiUrlGet + "V_SRC_CD=" + this.V_SRC_CD + "&V_USR_NM=" + this.V_USR_NM + "&REST_Service=ExeTypes&Verb=GET").subscribe(
+      res => {
+        if (res) {
+          this.exeTypeArray = res['V_EXE_TYP'];
+          this.exeTypeOptionalValue.next(res['V_EXE_TYP']);
+        }
+      });
+  }
+  getExeNameOptionalValue(exeType) {
+    this.V_SRC_CD = JSON.parse(sessionStorage.getItem('u')).SRC_CD;
+    this.V_USR_NM = JSON.parse(sessionStorage.getItem('u')).USR_NM;
+    let flag = 0;
+    let index = 0;
+    if (this.exeNameArray.length) {
+      this.exeNameArray.forEach((ele, i) => {
+        if (ele.exeType === exeType) {
+          flag = 1;
+          index = i;
+        }
+      })
+    }
+    if (!flag || !this.exeNameArray.length) {
+      this.http.get(this.apiUrlGet + "V_EXE_TYP=" + exeType + "&V_SRC_CD=" + this.V_SRC_CD + "&V_USR_NM=" + this.V_USR_NM + "&REST_Service=UsersExe&Verb=GET").subscribe(
+        res => {
+          if (res) {
+            this.exeNameArray.push({ 'exeType': exeType, 'exeName': res['EXE_CD'], 'data': res });
+            this.exeNameOptionalValue.next(this.exeNameArray);
+          }
+        });
     }
   }
 }
