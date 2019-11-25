@@ -25,8 +25,6 @@
               settings_system_daydream</mat-icon>
           </mat-panel-title>
         </mat-expansion-panel-header>
-        <!-- <div *ngFor="let group of currUser.V_USR_GRP_ID">{{group}}</div> -->
-        <!-- currUser.V_USR_GRP_ID.indexOf(group.groupId) == -1? 'Activate User':'Terminate User' -->
         <mat-icon *ngFor="let group of groupNameList| groupNameType:selectedUserProfile " [matTooltip]="group.key"
           (dblclick)="ondblclickGroup(currUser,group)"
           [ngClass]="{'disable-icon':(currUser.V_USR_GRP_ID.indexOf(group.groupId) == -1), 'tile-icon' : (currUser.V_USR_GRP_ID.indexOf(group.groupId) != -1)}">

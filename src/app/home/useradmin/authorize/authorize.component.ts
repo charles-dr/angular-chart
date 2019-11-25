@@ -305,12 +305,12 @@ export class AuthorizeComponent implements OnInit, OnDestroy {
       }
     }
   }
-  onExistingProcessSelect(event) {
+  onExistingProcessSelect(event, isFromSelectedRoleType?) {
     this.filteredServiceValues = [];
     if (this.radioSelected === 'SERVICE') {
       if (this.filteredAuthValues.length) {
         this.filteredAuthValues.forEach(ele => {
-          if (ele.V_APP_CD == event.V_APP_CD && ele.V_PRCS_CD == event.V_PRCS_CD) {
+          if (ele.V_APP_CD == (isFromSelectedRoleType ? event.app : event.V_APP_CD) && ele.V_PRCS_CD == (isFromSelectedRoleType ? event.process : event.V_PRCS_CD)) {
             if (this.filteredServiceValues.length) {
               let i = this.filteredServiceValues.findIndex(v => v.V_SRVC_CD == ele.V_SRVC_CD);
               if (i == -1) {

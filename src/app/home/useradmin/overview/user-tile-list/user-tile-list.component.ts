@@ -82,9 +82,10 @@ export class UserTileListComponent implements OnInit, OnDestroy {
     this.groupNameList.forEach(ele => {
       let index = this.groupList.findIndex(v => v.V_USR_GRP_DSC == ele.label);
       if (index > -1) {
-        ele.groupId = this.groupList[index].V_USR_GRP_ID;
+        ele.groupId = parseInt(this.groupList[index].V_USR_GRP_ID);
       }
     })
+    console.log('groupNameList', this.groupNameList);
   }
   userDropped(event: CdkDragDrop<User[]>) {
     if (event.previousContainer === event.container) {
