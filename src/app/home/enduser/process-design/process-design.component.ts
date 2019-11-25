@@ -1823,8 +1823,8 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
           console.log('res', res);
           if (res._body !== '{}') {
             this.globals.Report = JSON.parse(res._body)
-            console.log('this.StorageSessionService.setCookies', res.json());
-            this.StorageSessionService.setCookies('report_table', res.json());
+            this.StorageSessionService.setSession('report_table', res.json());
+
             this.check_data = res.json();
             this.app.loadingCharts = false;
             this.report = res.json();
@@ -1835,7 +1835,6 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
 
               this.router.navigateByUrl('/End_User/ReportTable', { skipLocationChange: true });
             } else if (this.report.RESULT[0] == 'INPUT_ARTFCT_TASK') {
-
               this.router.navigateByUrl('/End_User/InputArtForm', { skipLocationChange: true });
 
             } else if (CommonUtils.isValidValue(this.report.V_EXE_CD)) {

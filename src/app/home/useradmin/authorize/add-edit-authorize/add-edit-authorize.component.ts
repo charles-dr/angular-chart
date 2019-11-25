@@ -71,7 +71,6 @@ export class AddEditAuthorizeComponent extends AuthorizeComponent implements OnI
         this.onExistingAppSelect(this.selectedApp, true)
       }
       if (this.data.selectedProcess.process != '') {
-        console.log('selectedProcess', this.selectedProcess)
         // this.radioSelected = this.selectedApp.authType.toUpperCase();
         // console.log('radioSelected', this.radioSelected)
         let obj = this.selectedProcess;

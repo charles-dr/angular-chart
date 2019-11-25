@@ -157,10 +157,9 @@ export class FormComponent implements OnInit {
   }
 
   getFormData(): any {
-    this.Form_Data = [];
-    this.Form_Data = this.StorageSessionService.getCookies("report_table");
-    // console.log('this.formdata', this.Form_Data);
+    
     this.configService.prepareAndGetFieldConfigurations(this.Form_Data, true);
+    // console.log('this.formdata', this.Form_Data);
     this.RVP_Keys = [];
     this.RVP_Values = [];
     this.RVP_labels = [];
@@ -247,6 +246,7 @@ export class FormComponent implements OnInit {
     }
 
     this.optionalService.selecetedProcessTxnValue.next(obj);
+
     // this.getInputOutput();
   }
 

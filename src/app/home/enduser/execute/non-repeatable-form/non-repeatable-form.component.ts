@@ -75,6 +75,9 @@ export class NonRepeatableFormComponent extends FormComponent implements OnInit 
     this.navigationSubscription = router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: NavigationEnd) => {
+        this.Form_Data = [];
+        this.Form_Data = this.StorageSessionService.getSession("report_table");
+        console.log('dataa', this.StorageSessionService.getSession("report_table"))
         this.registerDataChangeHandler(this.updateInput.bind(this));
         this.getFormData();
         this.updateInput();
