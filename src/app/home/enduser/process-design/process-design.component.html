@@ -39,11 +39,11 @@
     <mat-sidenav class="tree-bg-color" #treesidenav mode="side" [opened]="true"
       [ngStyle]="{'width': expandPanel ? '270px' : '100%' }">
       <div flex fxLayout="column">
-        <div fxFlex="100">
+        <div fxFlex="noshrink">
           <ngx-treeview [config]="config" [items]="item" [itemTemplate]="itemTemplate">
           </ngx-treeview>
         </div>
-        <div fxFlex="100">
+        <div fxFlex="noshrink">
           <button *ngIf="item.length" mat-icon-button matTooltip="Add Application" (click)="addApplication()">
             <mat-icon class="add-btn add-font">add</mat-icon>
           </button>
@@ -101,8 +101,8 @@
               Process List
             </a>
           </div>
-          <div fxFlex="100" fxLayout="column">
-            <div fxFlex="100" [ngClass]="editProcessFlag?'stage-show':'stage-hide'">
+          <div fxFlex="noshrink" style="min-height: 100%;" fxLayout="column">
+            <div fxFlex="noshrink" [ngClass]="editProcessFlag?'stage-show':'stage-hide'">
               <mat-accordion>
                 <mat-expansion-panel [expanded]="expandPanel && closePanelOnSchedule">
                   <mat-expansion-panel-header>
@@ -130,7 +130,7 @@
             </div>
 
 
-            <div fxFlex="100">
+            <div fxFlex="noshrink">
               <mat-accordion>
                 <mat-expansion-panel [expanded]="expandPanel && closePanelOnSchedule">
                   <mat-expansion-panel-header>
@@ -343,7 +343,7 @@
 
             </div>
 
-            <div fxFlex="100" id="schedule" *ngIf="newScheduleView || Pause_btn || Resume_btn || Kill_btn">
+            <div fxFlex="noshrink" id="schedule" *ngIf="newScheduleView || Pause_btn || Resume_btn || Kill_btn">
               <!-- <h4 class="text-center">Schedule</h4>
                 <hr /> -->
               <mat-accordion>
@@ -429,7 +429,7 @@
                 </mat-expansion-panel>
               </mat-accordion>
             </div>
-            <div fxFlex="100" *ngIf="gantt">
+            <div fxFlex="noshrink" *ngIf="gantt">
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
@@ -442,7 +442,7 @@
               </mat-accordion>
 
             </div>
-            <div fxFlex="100" *ngIf="bar">
+            <div fxFlex="noshrink" *ngIf="bar">
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
@@ -456,7 +456,7 @@
               </mat-accordion>
 
             </div>
-            <div fxFlex="100" *ngIf="pie">
+            <div fxFlex="noshrink" *ngIf="pie">
               <mat-accordion>
                 <mat-expansion-panel>
                   <mat-expansion-panel-header>
