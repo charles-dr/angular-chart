@@ -1824,6 +1824,7 @@ export class ProcessDesignComponent implements OnInit, OnDestroy {
           if (res._body !== '{}') {
             this.globals.Report = JSON.parse(res._body)
             this.StorageSessionService.setSession('report_table', res.json());
+            this.StorageSessionService.setCookies('report_table', res.json());
 
             this.check_data = res.json();
             this.app.loadingCharts = false;
